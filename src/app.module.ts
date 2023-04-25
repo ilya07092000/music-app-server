@@ -3,9 +3,14 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { TrackModule } from './track/track.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), MongooseModule.forRoot(process.env.DB)],
+  imports: [
+    ConfigModule.forRoot(),
+    MongooseModule.forRoot(process.env.DB),
+    TrackModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
