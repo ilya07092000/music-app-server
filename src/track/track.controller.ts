@@ -12,6 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateCommentDto } from 'src/comment/dto/create-comment.dto';
 import { FileSizeValidationPipe } from 'src/pipes/file-size.pipe';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { TrackService } from './track.service';
@@ -55,5 +56,10 @@ export class TrackController {
   @Delete(':id')
   deleteById(@Param('id') id: string) {
     return this.trackService.deleteById(id);
+  }
+
+  @Post('/comment')
+  addComment(@Body() dto: CreateCommentDto) {
+    return this.trackService.addComment(dto);
   }
 }

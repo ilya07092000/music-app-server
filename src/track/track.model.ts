@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { Comment } from 'src/comment/comment.model';
 
 export type TrackDocument = HydratedDocument<Track>;
 
@@ -23,7 +24,8 @@ export class Track {
   @Prop({ type: String, required: true, unique: true })
   audio: string;
 
-  // comments:
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }] })
+  comments: Comment[];
 }
 
 export const TrackSchema = SchemaFactory.createForClass(Track);
