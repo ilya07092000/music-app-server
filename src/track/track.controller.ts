@@ -1,4 +1,19 @@
-import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  FileTypeValidator,
+  Get,
+  Param,
+  ParseFilePipe,
+  Post,
+  Put,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileSizeValidationPipe } from 'src/pipes/file-size.pipe';
+import { CreateTrackDto } from './dto/create-track.dto';
 import { TrackService } from './track.service';
 
 @Controller('track')
@@ -16,8 +31,20 @@ export class TrackController {
   }
 
   @Post()
-  create() {
-    return this.trackService.create();
+  @UseInterceptors(FileInterceptor('audio'))
+  create(
+    @Body() dto: CreateTrackDto,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileSizeValidationPipe({ maxSize: 10000000 }),
+          new FileTypeValidator({ fileType: 'audio/mpeg' }),
+        ],
+      }),
+    )
+    audio: Express.Multer.File,
+  ) {
+    return this.trackService.create(dto, audio);
   }
 
   @Put()
@@ -25,8 +52,8 @@ export class TrackController {
     return this.trackService.update();
   }
 
-  @Delete()
-  deleteById() {
-    return this.trackService.deleteById();
+  @Delete(':id')
+  deleteById(@Param('id') id: string) {
+    return this.trackService.deleteById(id);
   }
 }
