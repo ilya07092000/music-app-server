@@ -7,6 +7,7 @@ import { TrackModule } from './track/track.module';
 import { FileModule } from './file/file.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { join } from 'path';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, 'static'),
     }),
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
