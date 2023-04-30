@@ -67,4 +67,8 @@ export class TrackService {
 
     return track;
   }
+
+  getFile(name: string) {
+    return this.fileService.getFileStream(name);
+  }
 }

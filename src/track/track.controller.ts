@@ -8,10 +8,13 @@ import {
   ParseFilePipe,
   Post,
   Put,
+  Res,
+  StreamableFile,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 import { CreateCommentDto } from 'src/comment/dto/create-comment.dto';
 import { FileSizeValidationPipe } from 'src/pipes/file-size.pipe';
 import { CreateTrackDto } from './dto/create-track.dto';
@@ -38,7 +41,7 @@ export class TrackController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileSizeValidationPipe({ maxSize: 10000000 }),
+          new FileSizeValidationPipe({ maxSize: 100000000 }),
           new FileTypeValidator({ fileType: 'audio/mpeg' }),
         ],
       }),
@@ -61,5 +64,20 @@ export class TrackController {
   @Post('/comment')
   addComment(@Body() dto: CreateCommentDto) {
     return this.trackService.addComment(dto);
+  }
+
+  @Get('/file/:name')
+  getFile(
+    @Res({ passthrough: true }) res: Response,
+    @Param('name') name: string,
+  ) {
+    const fileStream = this.trackService.getFile(name);
+    res.set({
+      'Content-Type': 'application/json',
+      'Content-Disposition': `attachment; filename="${name}"`,
+    });
+    fileStream.on('data', (chunk) => console.log(chunk));
+
+    return new StreamableFile(fileStream);
   }
 }
