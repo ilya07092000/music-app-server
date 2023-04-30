@@ -11,11 +11,13 @@ import {
   Res,
   StreamableFile,
   UploadedFile,
+  UseFilters,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { CreateCommentDto } from 'src/comment/dto/create-comment.dto';
+import { MongoExceptionsFilter } from 'src/exceptions/mongo-exceptions.filter';
 import { FileSizeValidationPipe } from 'src/pipes/file-size.pipe';
 import { CreateTrackDto } from './dto/create-track.dto';
 import { TrackService } from './track.service';
@@ -35,6 +37,7 @@ export class TrackController {
   }
 
   @Post()
+  @UseFilters(MongoExceptionsFilter)
   @UseInterceptors(FileInterceptor('audio'))
   create(
     @Body() dto: CreateTrackDto,
