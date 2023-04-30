@@ -41,7 +41,7 @@ export class TrackController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new FileSizeValidationPipe({ maxSize: 100000000 }),
+          new FileSizeValidationPipe({ maxSize: 10000000 }),
           new FileTypeValidator({ fileType: 'audio/mpeg' }),
         ],
       }),
